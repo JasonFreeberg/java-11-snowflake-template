@@ -1,0 +1,42 @@
+name: Deploy stored procedures and UDFs
+
+on:
+  commit:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Build and test app
+        run: mvn clean install
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: java-app
+          path: '${{ github.workspace }}/target/*.jar'
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: java-app
+        
+      - name: Deploy jobs
+        run: deploy.sh
+        env:
+          SNOWFLAKE_PASSWORD: ${secrets.SNOWFLAKE_PASSWORD}

@@ -1,4 +1,4 @@
-package com.snowflake;
+package com.snowflake.procedure;
 
 import static org.junit.Assert.assertTrue;
 
